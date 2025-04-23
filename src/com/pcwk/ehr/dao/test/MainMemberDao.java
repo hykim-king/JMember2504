@@ -18,7 +18,8 @@ import com.pcwk.ehr.member.dao.MemberDao;
 public class MainMemberDao {
 
 	public static void main(String[] args) {
-        //88Hello github
+
+        //88Hello github99
 		MemberDao dao = new MemberDao();
         //Hello
 	}
