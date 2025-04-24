@@ -43,8 +43,17 @@ public class MemberDao implements Workdiv<MemberVO>, PLog {
 
 		getMemberReadFile(MEMBER_DATA);
 		// getGoogleDocsMemberReadFile();
+		displayMembers();
 	}
+	public void displayMembers() {
+		LOG.debug("┌───────────────────────┐");
+		LOG.debug("│List<MemberVO>         │");
+		LOG.debug("└───────────────────────┘");
 
+		for (MemberVO vo : members) {
+			LOG.debug(vo);
+		}
+	}
 	public int writeFile() {
 
 		int count = 0; // 저장 건수
@@ -174,13 +183,7 @@ public class MemberDao implements Workdiv<MemberVO>, PLog {
 				// LOG.debug(memberVO);
 				members.add(memberVO);
 			}
-			LOG.debug("┌───────────────────────┐");
-			LOG.debug("│List<MemberVO>         │");
-			LOG.debug("└───────────────────────┘");
 
-			for (MemberVO vo : members) {
-				LOG.debug(vo);
-			}
 
 		} catch (FileNotFoundException e) {
 			LOG.debug("FileNotFoundException:" + e.getMessage());
