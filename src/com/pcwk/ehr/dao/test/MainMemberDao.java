@@ -158,7 +158,7 @@ public class MainMemberDao implements PLog {
 
 		// 회원Update
 		main.doUpdate();
-		
+		 
 		// 회원목록 조회
 		main.doRetrieve();
 
