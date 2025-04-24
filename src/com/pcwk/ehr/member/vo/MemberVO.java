@@ -39,7 +39,28 @@ public class MemberVO  extends DTO {
 		this.regDt = regDt;
 		this.role = role;
 	}
-
+	
+	public String voToString() {
+		return String.format("%s,%s,%s,%s,%d,%d,%s,%s%n", memberId
+				                       ,name
+				                       ,password
+				                       ,email
+				                       ,loginCount
+				                       ,regDt
+				                       ,role
+				                       );
+	}
+	
+	public String stringToVO() {
+		return String.format("%-10s %-10s %-10s %-20s %-9d %-15s %-10s%n", memberId
+                ,name
+                ,password
+                ,email
+                ,loginCount
+                ,regDt
+                ,role
+                );
+	}
 	/**
 	 * @return the memberId
 	 */

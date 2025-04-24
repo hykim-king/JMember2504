@@ -49,4 +49,9 @@ public class DTO {
 		this.searchWord = searchWord;
 	}
 
+	@Override
+	public String toString() {
+		return "DTO [searchDiv=" + searchDiv + ", searchWord=" + searchWord + "]";
+	}
+
 }

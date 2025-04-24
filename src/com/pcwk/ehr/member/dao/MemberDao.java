@@ -14,8 +14,10 @@
 package com.pcwk.ehr.member.dao;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -23,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pcwk.ehr.cmn.DTO;
 import com.pcwk.ehr.cmn.PLog;
 import com.pcwk.ehr.cmn.Workdiv;
 import com.pcwk.ehr.member.vo.MemberVO;
@@ -33,13 +36,52 @@ public class MemberDao implements Workdiv<MemberVO>, PLog {
 	public static final String MEMBER_URL = "https://drive.google.com/file/d/1el8BQlmrkGj6_tEZmtv67ViH3Hw3Zy0Z/view?usp=sharing";
 
 	public static final String MEMBER_DATA = ".\\data\\member.csv";
-	private List<MemberVO> members = new ArrayList<MemberVO>();
+	public static List<MemberVO> members = new ArrayList<MemberVO>();
 
 	// 파일에서 회원정보 읽기
 	public MemberDao() {
 
-		 getMemberReadFile(MEMBER_DATA);
-		//getGoogleDocsMemberReadFile();
+		getMemberReadFile(MEMBER_DATA);
+		// getGoogleDocsMemberReadFile();
+	}
+
+	public int writeFile() {
+
+		int count = 0; // 저장 건수
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(MEMBER_DATA))) {
+			// List<MemberVO> -> MemberVO
+			String filedSeparator = ",";
+			// pcwk01,이상무01,4321,jamesol@paran.com,1,0,2024/10/17 14:33:00,일반
+
+			for (MemberVO vo : members) {
+				++count;
+				bw.write(vo.voToString());
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return count;
+	}
+
+	/**
+	 * 회원 존재확인
+	 * 
+	 * @param dto
+	 * @return true(존재)/false(없음)
+	 */
+	public boolean isExistsMember(MemberVO dto) {
+		boolean flag = false;
+
+		for (MemberVO vo : members) {
+			if (dto.getMemberId().equals(vo.getMemberId())) {
+				flag = true;
+				break;
+			}
+		}
+
+		return flag;
 	}
 
 	/**
@@ -156,32 +198,120 @@ public class MemberDao implements Workdiv<MemberVO>, PLog {
 
 	@Override
 	public int doSave(MemberVO dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		int flag = 0;
+		// members
+		LOG.debug("1. param:" + dto);
+
+		// 기존 회원이 존재 하면
+		if (isExistsMember(dto) == true) {
+			flag = 2;
+			return flag;
+		}
+
+		flag = this.members.add(dto) ? 1 : 0;
+		LOG.debug("2. flag:" + flag);
+
+		return flag;
 	}
 
 	@Override
 	public MemberVO doSelectOne(MemberVO dto) {
-		// TODO Auto-generated method stub
-		return null;
+		MemberVO outVO = null;
+		LOG.debug("1. param:" + dto);
+		for (MemberVO vo : members) {
+			if (vo.getMemberId().equals(dto.getMemberId())) {
+				outVO = vo;
+				break;
+			}
+		}
+
+		LOG.debug("2. outVO:" + outVO);
+
+		return outVO;
 	}
 
 	@Override
-	public List<MemberVO> doRetrieve(MemberVO dto) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<MemberVO> doRetrieve(MemberVO param) {
+		DTO dto = param;
+		List<MemberVO> list = new ArrayList<MemberVO>();
+		LOG.debug("1. param:" + param.getSearchDiv());
+		LOG.debug("2. param:" + param.getSearchWord());
+
+		if (dto.getSearchDiv().equals("전체") || dto.getSearchDiv().equals("ALL")) {
+			return members;
+			// 회원ID
+		} else if (dto.getSearchDiv().equals("10")) {
+			for (MemberVO vo : members) {
+				if (vo.getMemberId().contains(dto.getSearchWord())) {
+					list.add(vo);
+				}
+			}
+			// 이름
+		} else if (dto.getSearchDiv().equals("20")) {
+			for (MemberVO vo : members) {
+				if (vo.getName().contains(dto.getSearchWord())) {
+					list.add(vo);
+				}
+			}
+			// 이메일
+		} else if (dto.getSearchDiv().equals("30")) {
+			for (MemberVO vo : members) {
+				if (vo.getEmail().contains(dto.getSearchWord())) {
+					list.add(vo);
+				}
+			}
+			// 전체
+		} else {
+			return members;
+		}
+
+		return list;
 	}
 
 	@Override
 	public int doUpdate(MemberVO dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		int flag = 0;
+
+		// 기존 회원이 존재 하지 않음면. return 3
+		if (isExistsMember(dto) == false) {
+			flag = 9;
+			return flag;
+		}
+
+		// Delete, Insert
+		flag = doDelete(dto);
+
+		if (flag == 1) {
+			flag += doSave(dto);
+		}
+
+		return flag;
 	}
 
 	@Override
 	public int doDelete(MemberVO dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		int flag = 0;
+		// members
+		LOG.debug("1. param:" + dto);
+
+		// 기존 회원이 존재 하지 않음면. return 2
+		if (isExistsMember(dto) == false) {
+			flag = 2;
+			return flag;
+		}
+
+		for (int i = 0; i < members.size(); i++) {
+			MemberVO vo = members.get(i);
+			if (vo.getMemberId().equals(dto.getMemberId())) {
+				members.remove(i);
+				flag = 1;
+				break;
+			}
+		}
+
+		LOG.debug("2. flag:" + flag);
+
+		return flag;
 	}
 
 }
