@@ -41,7 +41,7 @@ public class MemberVO  extends DTO {
 	}
 	
 	public String voToString() {
-		return String.format("%s,%s,%s,%s,%d,%d,%s,%s%n", memberId
+		return String.format("%s,%s,%s,%s,%d,%s,%s%n", memberId
 				                       ,name
 				                       ,password
 				                       ,email

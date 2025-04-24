@@ -61,7 +61,7 @@ public class MemberDao implements Workdiv<MemberVO>, PLog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		LOG.debug("저장 회원수:"+count);
 		return count;
 	}
 

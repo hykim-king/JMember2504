@@ -49,6 +49,8 @@ public class MainMemberDao implements PLog {
 		} else {
 			System.out.println("등록 성공");
 		}
+		
+		dao.writeFile();
 
 	}
 
@@ -102,6 +104,7 @@ public class MainMemberDao implements PLog {
 			System.out.println("삭제 회원이 없습니다.");
 		}
 
+		dao.writeFile();
 	}
 
 	public void doUpdate() {
@@ -120,6 +123,7 @@ public class MainMemberDao implements PLog {
 			System.out.println("수정 회원이 없습니다.");
 		}
 
+		dao.writeFile();
 	}
 
 	public void doRetrieve() {
@@ -127,8 +131,7 @@ public class MainMemberDao implements PLog {
 		LOG.debug("│doRetrieve()           │");
 		LOG.debug("└───────────────────────┘");				
 		MemberVO param = new MemberVO();
-		param.setSearchDiv("10");
-		param.setSearchWord("01");
+		param.setSearchDiv("전체");
 		
 		List<MemberVO> list = dao.doRetrieve(param);
 		for (MemberVO vo : list) {
@@ -141,8 +144,9 @@ public class MainMemberDao implements PLog {
 		// Hello
 		MainMemberDao main = new MainMemberDao();
 		// 회원가입
-		// main.doSave();
+		 main.doSave();
 
+		 
 		// 회원존재 확인
 		// main.isExistsMember();
 
@@ -153,7 +157,7 @@ public class MainMemberDao implements PLog {
 		// main.doDelete();
 
 		// 회원Update
-		//main.doUpdate();
+		main.doUpdate();
 		
 		// 회원목록 조회
 		main.doRetrieve();
